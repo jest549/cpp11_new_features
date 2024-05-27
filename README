@@ -1,0 +1,79 @@
+编译：g++ main.cpp -std=c++11 -pthread
+1.新增的关键字
+nullptr取代NULL、0
+constexpr：显式声明函数返回值、变量是一个常量表达式
+auto：对变量类型推导，
+decltype：对表达式类型推导，用法为decltype(表达式)
+using:声明使用的命名空间、代替typedef
+override：显式的告知编译器进行重载
+final ：为了防止类被继续继承以及终止虚函数继续重载引入的
+default：使用编译器会自动生成的成员函数，如构造函数、拷贝构造函数、=操作符函数
+delete：显式指定不使用编译器会自动生成的成员函数，如构造函数、拷贝构造函数、=操作符函数
+enum class:定义枚举变量
+sizeof…运算符，变长参数传递使用
+noexepct显式声明函数不会抛出异常
+explicit显式指定编译不要进行隐式转换，一般修饰构造函数
+static_cast(编译时类型转换检查)、dynamic_cast (运行时类型转换检查) 、const_cast(去除const属性)、reinterpret（任意类型强转）
+mutable ：const对象不能调用非const函数，mutable修饰的变量允许在const函数中修改变量
+
+2.std库新特性
+std::begin和std::end函数
+引入c_begin和c_end成员函数，其返回值类型是const_iterator
+std::array静态数组类
+std::forward_list单向列表类
+std::initializer_lis初始化列表类
+shrink_to_fit释放空闲的空间成员函数（只用于std::vector、std::string、std::deque容器,vsomeip源码也有这样的操作）
+std::bind绑定函数(闭包函数，带状态函数)
+std::function可调用对象包装函数
+std::move移动函数(无条件强制转换为右值)，为了减少拷贝动作
+std::forward转发函数(保持原始参数的左值或右值性，保证类型的不变性)，配合模板万能引用&&使用，传递参数
+std::tuple多元素组合类，与std::pair类似，std::pair仅支持两个元素组合
+std::unordered_map/std::unordered_multimap哈希的键值对（无序）
+std::unordered_set/std::unordered_multiset只有key的集合（无序）
+
+
+3.
+
+[捕捉列表] (参数列表) 关键字 ->返回类型{ 函数体;};
+	其中参数列表、返回类型、关键字可以省略。lambda表达式可以理解为匿名函数，但是是在运行时创建
+	最简单的lambda表达式：[]{};
+
+	[捕捉列表]:[]、[&]、[=]、[this]、[某变量名]、[& 某变量名]、[=,&某变量名]、 [&,=某变量名] …..，全局变量、局部静态变量默认捕捉可用
+关键字：
+	mutable:可以修改按值传递进来的拷贝,注意不是值本身
+	exception:声明函数抛出的异常
+
+4.智能指针
+（*）共享指针std::shared_ptr与std::make_share
+（*）独享指针std::unique_ptr (std::make_unique在C++11没有，C++14才加入)
+（*）弱指针std::weak_ptr(用于辅助std::share_ptr工作，比较少用)
+（*）继承std::enable_shared_from_this类， 可以在类内部安全唯一地指向自身，而不是多个指向this的std::shared_ptr指针
+备注：
+（*）std::shared_ptr的成员函数:use_count（引用个数）、unique(是否独占)、reset(重置，分为带参数，不带参数)、*(解引用)、get(返回原始指针)、swap()交换指向的对象、=nullptr(引用计数减1，减到0对象析构)
+（*）std::unique的成员函数:release(释放对象)、 reset(重置，分为带参数，不带参数)、 *(解引用)、get(返回原始指针)、swap()交换指向的对象、 =nullptr(对象析构)
+（*）std::unique可以转换为std::shared_ptr，可以直接赋值、std::move
+（*）std::weak_ptr的成员函数: use_count（ std::shared_ptr引用个数）、expired(对象是否不存在) 、 reset(重置,弱引用计数减1)、lock(返回std::shared_ptr) =nullptr(弱引用计数减1)
+
+5.线程
+（*）std::thread类创建线程
+（*）std::mutex、std::timed_mutex、std::recursive_mutex与std::recursive_timed_mutex互斥量类
+（*）std::lock_guard、std::unique_lock(提供更多细节方法，但更占空间，效率比前者差一点)配合std::mutex，离开作用域自动释放互斥量
+（*）std::condition_variable条件变量类（有wait/notify_one/notify_all成员函数）
+（*）std::this_thread::sleep_for(std::chrono::milliseconds(900));//还有sleep_until
+（*）std::atomi原子操作类模板与std::memory_order(比较少用到)
+（*）std::call_once只调用一次，配合std::once_flag变量使用。一般用在单例模式
+（*）std::async与std::future、std::share_futrue
+（*）std::packaged_task任务打包
+（*）std::promise传入到线程，用于赋值。另一种方式获取值
+
+6.其他
+（*）使用{}、()对变量的初始化
+（*）类的委托构造(一个构造函数调用另一个构造函数)
+（*）变长参数模板
+（*）类的仿函数
+（*）类的构造函数使用初始化列表进行初始化
+
+
+
+
+
